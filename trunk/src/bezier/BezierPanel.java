@@ -221,13 +221,10 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     public void resetView() {
-        Point2D areaSize = scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight()));
-        translate.setLocation(areaSize.getX() * .05, areaSize.getY() * .95);
-        updateTranslateAndScaleLabel();
-
         scale = 1;
+        translate.setLocation(getWidth() * .05, getHeight() * .95);
+        updateTranslateAndScaleLabel();
         repaint();
-
     }
 
     public void degreeElevation(Point2D point) {
