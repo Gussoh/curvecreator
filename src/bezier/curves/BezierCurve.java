@@ -24,6 +24,10 @@ public class BezierCurve extends Curve {
         getControlPoints().add(startPoint);
     }
 
+    public BezierCurve(List<Point2D> controlPoints) {
+        setControlPoints(controlPoints);
+    }
+
     @Override
     public void paintCurve(Graphics2D g, int quality) {
         paintAdaptiveRendering(getControlPoints(), g, quality);
