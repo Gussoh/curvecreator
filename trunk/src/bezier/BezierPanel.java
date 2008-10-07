@@ -220,6 +220,11 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
 
     }
 
+    public void reset() {
+        curves.clear();
+        resetView();
+    }
+    
     public void resetView() {
         scale = 1;
         translate.setLocation(getWidth() * .05, getHeight() * .95);
