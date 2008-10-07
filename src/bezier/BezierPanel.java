@@ -49,6 +49,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     private Point2D translate = new Point2D.Double(0, 0);
     private Point2D mouseLastDragPoint = new Point2D.Double(0, 0);
     private double scale = 1;
+    private int quality = Curve.HIGH_QUALITY;
 
     public BezierPanel(BezierView bw) {
         bezierView = bw;
@@ -69,6 +70,14 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
 
     public void removeChangeListener(StateChangeListener c) {
         changeListeners.remove(c);
+    }
+
+    /**
+     * One of the constants LOW_QUALITY, MEDIUM_QUALITY or HIGH_QUALITY
+     * @param quality
+     */
+    public void setQuality(int quality) {
+        this.quality = quality;
     }
 
     public void scaleAllCurves(double scale) {
@@ -128,14 +137,14 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         g.scale(scale, scale);
         g.translate(translate.getX(), translate.getY());
 
-
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
+        if (quality >= Curve.MEDIUM_QUALITY) {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        }
         Stroke controlPointStroke = new BasicStroke((float) ((snap * 2) * (1 / scale)));
         Stroke controlPolygonStroke = new BasicStroke(1);
         Stroke curveStroke = new BasicStroke(2);
@@ -175,7 +184,8 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                 g.setColor(Color.GREEN);
                 g.setStroke(curveStroke);
             }
-            curve.paintCurve(g);
+            
+            curve.paintCurve(g, quality);
 
             if (viewControlPoints || hovered) {
                 g.setColor(Color.CYAN);

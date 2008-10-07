@@ -19,12 +19,18 @@ import java.util.List;
  */
 public abstract class Curve {
 
+    public static int LOW_QUALITY = 1,  MEDIUM_QUALITY = 2,  HIGH_QUALITY = 3;
     
     private List<Point2D> controlPoints = new ArrayList<Point2D>();
 
     public abstract boolean isValid();
     
-    public abstract void paintCurve(Graphics2D g);
+    /**
+     * Paints the curve on the provided graphics object
+     * @param g The graphics object to paint on.
+     * @param quality The visual-quality of the curve. Must be one of the constants LOW_QUALITY, MEDIUM_QUALITY, HIGH_QUALITY.
+     */
+    public abstract void paintCurve(Graphics2D g, int quality);
 
     public void paintControlPoints(Graphics2D g) {
         for (Point2D point : controlPoints) {
