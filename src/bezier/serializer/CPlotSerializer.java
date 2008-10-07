@@ -10,6 +10,7 @@ import bezier.curves.Curve;
 import java.awt.geom.Point2D;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -48,20 +49,19 @@ public class CPlotSerializer implements Serializer {
                     yMax = Math.max(point.getY(), yMax);
                 }
             }
-            
+
             // flip coordinate system
             for (Curve curve : curves) {
                 for (Point2D point : curve.getControlPoints()) {
-                    
                 }
             }
         }
 
         int diff = (int) Math.ceil(Math.max(xMax - xMin, yMax - yMin));
-        
+
         xMax = xMin + diff;
         yMax = yMin + diff;
-        
+
         StringBuilder sb = new StringBuilder();
         sb.append("WIND\n");
         sb.append(xMin).append('\t').append(xMax).append('\t').append(-yMax).append('\t').append(-yMin).append("\n\n");
@@ -88,6 +88,7 @@ public class CPlotSerializer implements Serializer {
     public void setData(String data, boolean supressWarnings) throws ParseException {
         StringTokenizer st = new StringTokenizer(data);
         TreeMap<Integer, Curve> curves = new TreeMap<Integer, Curve>();
+        HashMap<Point2D, Point2D> points = new HashMap<Point2D, Point2D>();
 
         boolean weightWarningShowed = false;
         boolean zWarningShowed = false;
@@ -102,7 +103,17 @@ public class CPlotSerializer implements Serializer {
                 if (command.equalsIgnoreCase("STOR")) {
                     int id = Integer.parseInt(st.nextToken());
                     int degree = Integer.parseInt(st.nextToken());
-                    Curve c = new BezierCurve(new Point2D.Double(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken())));
+
+                    Curve c = null;
+
+                    Point2D temp = new Point2D.Double(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()));
+                    if (points.containsKey(temp)) {
+                        c = new BezierCurve(points.get(temp));
+                    } else {
+                        c = new BezierCurve(temp);
+                        points.put(temp, temp);
+                    }
+
                     curves.put(id, c);
                     zValue = st.nextToken(); // z-variable
 
@@ -116,7 +127,15 @@ public class CPlotSerializer implements Serializer {
                     }
 
                     for (int i = 0; i < degree; i++) {
-                        c.addControlPoint(new Point2D.Double(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken())));
+                        
+                        temp = new Point2D.Double(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()));
+                        if (points.containsKey(temp)) {
+                            c.addControlPoint(points.get(temp));
+                        } else {
+                            c = new BezierCurve(temp);
+                            points.put(temp, temp);
+                        }
+
                         String newZ = st.nextToken();
                         if (!newZ.equals(zValue) && !zWarningShowed) {
                             zWarningShowed = true;

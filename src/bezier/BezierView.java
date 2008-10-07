@@ -398,7 +398,7 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         jfc.showOpenDialog(bezierPanel);
         if (jfc.getSelectedFile() != null) {
 
-            bezierPanel = new BezierPanel(this);
+            bezierPanel.reset();
             try {
                 CPlotSerializer sps = new CPlotSerializer(bezierPanel);
                 BufferedReader in = new BufferedReader(new FileReader(jfc.getSelectedFile()));
@@ -495,7 +495,7 @@ private void viewControlPolygonCheckBoxMenuItemActionPerformed(java.awt.event.Ac
 
 private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuItemActionPerformed
     if (maybeSaveFile()) {
-        bezierPanel = new BezierPanel(this);
+        bezierPanel.reset();
         saved = true;
     }
 }//GEN-LAST:event_newMenuItemActionPerformed
