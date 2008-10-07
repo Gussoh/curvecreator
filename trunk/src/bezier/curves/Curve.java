@@ -16,7 +16,7 @@ import java.util.List;
  */
 public abstract class Curve {
 
-    public static int LOW_QUALITY = 1,  MEDIUM_QUALITY = 2,  HIGH_QUALITY = 3;
+    public static int LOW_QUALITY = 1,  MEDIUM_QUALITY = 2,  HIGH_QUALITY = 3, EXPORT_QUALITY = 4;
     
     private List<Point2D> controlPoints = new ArrayList<Point2D>();
 

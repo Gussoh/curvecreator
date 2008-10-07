@@ -38,8 +38,10 @@ public class BezierCurve extends Curve {
             return 10;
         } else if(quality == MEDIUM_QUALITY) {
             return 5;
-        } else {
+        } else if(quality == HIGH_QUALITY) {
             return 0.1;
+        } else {
+            return 0.001;
         }
     }
     
