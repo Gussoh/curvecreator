@@ -142,6 +142,9 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         newMenuItem = new javax.swing.JMenuItem();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JSeparator();
+        exportMenuItem = new javax.swing.JMenuItem();
+        jSeparator6 = new javax.swing.JSeparator();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         degreeElevationMenuItem = new javax.swing.JMenuItem();
@@ -184,7 +187,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 488, Short.MAX_VALUE)
+            .addGap(0, 483, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -222,6 +225,22 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
             }
         });
         fileMenu.add(saveMenuItem);
+
+        jSeparator5.setName("jSeparator5"); // NOI18N
+        fileMenu.add(jSeparator5);
+
+        exportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        exportMenuItem.setText(resourceMap.getString("exportMenuItem.text")); // NOI18N
+        exportMenuItem.setName("exportMenuItem"); // NOI18N
+        exportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exportMenuItem);
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        fileMenu.add(jSeparator6);
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance(bezier.BezierApp.class).getContext().getActionMap(BezierView.class, this);
         exitMenuItem.setAction(actionMap.get("quit")); // NOI18N
@@ -363,6 +382,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         viewMenu.add(jSeparator4);
 
         lowQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        lowQualityRadioButtonMenuItem.setText(resourceMap.getString("lowQualityRadioButtonMenuItem.text")); // NOI18N
         lowQualityRadioButtonMenuItem.setName("lowQualityRadioButtonMenuItem"); // NOI18N
         lowQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -372,6 +392,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         viewMenu.add(lowQualityRadioButtonMenuItem);
 
         mediumQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mediumQualityRadioButtonMenuItem.setText(resourceMap.getString("mediumQualityRadioButtonMenuItem.text")); // NOI18N
         mediumQualityRadioButtonMenuItem.setName("mediumQualityRadioButtonMenuItem"); // NOI18N
         mediumQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -382,6 +403,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         highQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         highQualityRadioButtonMenuItem.setSelected(true);
+        highQualityRadioButtonMenuItem.setText(resourceMap.getString("highQualityRadioButtonMenuItem.text")); // NOI18N
         highQualityRadioButtonMenuItem.setName("highQualityRadioButtonMenuItem"); // NOI18N
         highQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -683,10 +705,15 @@ private void splitCurveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
     splitCurve = true;
 }//GEN-LAST:event_splitCurveMenuItemActionPerformed
 
+private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportMenuItemActionPerformed
+    new ImageExportDialog(getFrame(), true, bezierPanel.getCurves());
+}//GEN-LAST:event_exportMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
     private javax.swing.JMenuItem curveInfoMenuItem;
     private javax.swing.JMenuItem degreeElevationMenuItem;
+    private javax.swing.JMenuItem exportMenuItem;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JRadioButtonMenuItem highQualityRadioButtonMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
@@ -695,6 +722,8 @@ private void splitCurveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JRadioButtonMenuItem lowQualityRadioButtonMenuItem;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JRadioButtonMenuItem mediumQualityRadioButtonMenuItem;
