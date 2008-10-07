@@ -141,16 +141,16 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         Stroke curveStroke = new BasicStroke(2);
         Stroke curveStrokeSelected = new BasicStroke(3);
         Stroke coordinateSystemStroke = new BasicStroke(3);
-        
+
         // coordinate system
         g.setStroke(coordinateSystemStroke);
         g.setColor(Color.WHITE);
-        
+
         Line2D x = new Line2D.Double(0, scaleAndTranslatePoint(new Point2D.Double(0, 0)).getY(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getY());
         g.draw(x);
         Line2D y = new Line2D.Double(scaleAndTranslatePoint(new Point2D.Double(0, 0)).getX(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getX(), 0);
         g.draw(y);
-        
+
         for (Curve curve : curves) {
 
             Point2D underHoverPoint = null;
@@ -221,19 +221,18 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     public void resetView() {
-
-        translate = new Point2D.Double(0, 0);
-        scale =
-                1;
+        Point2D areaSize = scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight()));
+        translate.setLocation(areaSize.getX() * .05, areaSize.getY() * .95);
         updateTranslateAndScaleLabel();
 
+        scale = 1;
         repaint();
 
     }
 
     public void degreeElevation(Point2D point) {
 
-        Point2D closest = getClosestControlPoint(point, snap);
+        Point2D closest = getClosestControlPoint(scaleAndTranslatePoint(point), snap);
 
         if (closest != null) {
             Curve c = null;
@@ -533,9 +532,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     public void componentShown(ComponentEvent e) {
-        Point2D areaSize = scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight()));
-        translate.setLocation(areaSize.getX() * .05, areaSize.getY() * .95);
-        updateTranslateAndScaleLabel();
+        resetView();
     }
 
     public void componentHidden(ComponentEvent e) {
