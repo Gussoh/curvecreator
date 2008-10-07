@@ -20,17 +20,25 @@ import java.util.List;
  */
 public class BezierCurve extends Curve {
 
-    private static double maxHeight = .1;
-
     public BezierCurve(Point2D startPoint) {
         getControlPoints().add(startPoint);
     }
 
     @Override
-    public void paintCurve(Graphics2D g) {
-        paintAdaptiveRendering(getControlPoints(), g);
+    public void paintCurve(Graphics2D g, int quality) {
+        paintAdaptiveRendering(getControlPoints(), g, quality);
     }
 
+    private static double getMaxHeightByQuality(int quality) {
+        if(quality == LOW_QUALITY) {
+            return 10;
+        } else if(quality == MEDIUM_QUALITY) {
+            return 5;
+        } else {
+            return 0.1;
+        }
+    }
+    
     private static double getHeight(List<Point2D> curve) {
         if (curve.size() <= 2) {
             return 0;
@@ -94,10 +102,10 @@ public class BezierCurve extends Curve {
         }
     }
 
-    public static void paintAdaptiveRendering(List<Point2D> curve, Graphics2D g) {
-        if (getHeight(curve) > maxHeight) {
-            paintAdaptiveRendering(splitLeft(curve), g);
-            paintAdaptiveRendering(splitRight(curve), g);
+    public static void paintAdaptiveRendering(List<Point2D> curve, Graphics2D g, int quality) {
+        if (getHeight(curve) > getMaxHeightByQuality(quality)) {
+            paintAdaptiveRendering(splitLeft(curve), g, quality);
+            paintAdaptiveRendering(splitRight(curve), g, quality);
         } else {
             Line2D l = new Line2D.Double(curve.get(0), curve.get(curve.size() - 1));
             g.draw(l);

@@ -3,6 +3,7 @@
  */
 package bezier;
 
+import bezier.curves.Curve;
 import bezier.serializer.CPlotSerializer;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
@@ -20,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import javax.swing.ButtonGroup;
 import javax.swing.Timer;
 import javax.swing.Icon;
 import javax.swing.JDialog;
@@ -99,6 +101,11 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
                 }
             }
         });
+        
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(lowQualityRadioButtonMenuItem);
+        bg.add(mediumQualityRadioButtonMenuItem);
+        bg.add(highQualityRadioButtonMenuItem);
 
         mainPanel.setLayout(new BorderLayout());
         bezierPanel = new BezierPanel(this);
@@ -147,9 +154,9 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         jSeparator2 = new javax.swing.JSeparator();
         cplotMenuItem = new javax.swing.JCheckBoxMenuItem();
         jSeparator4 = new javax.swing.JSeparator();
-        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
-        jRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
+        lowQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        mediumQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        highQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -327,20 +334,36 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         jSeparator4.setName("jSeparator4"); // NOI18N
         viewMenu.add(jSeparator4);
 
-        jRadioButtonMenuItem1.setSelected(true);
-        jRadioButtonMenuItem1.setText(resourceMap.getString("jRadioButtonMenuItem1.text")); // NOI18N
-        jRadioButtonMenuItem1.setName("jRadioButtonMenuItem1"); // NOI18N
-        viewMenu.add(jRadioButtonMenuItem1);
+        lowQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        lowQualityRadioButtonMenuItem.setText(resourceMap.getString("lowQualityRadioButtonMenuItem.text")); // NOI18N
+        lowQualityRadioButtonMenuItem.setName("lowQualityRadioButtonMenuItem"); // NOI18N
+        lowQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lowQualityRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(lowQualityRadioButtonMenuItem);
 
-        jRadioButtonMenuItem2.setSelected(true);
-        jRadioButtonMenuItem2.setText(resourceMap.getString("jRadioButtonMenuItem2.text")); // NOI18N
-        jRadioButtonMenuItem2.setName("jRadioButtonMenuItem2"); // NOI18N
-        viewMenu.add(jRadioButtonMenuItem2);
+        mediumQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mediumQualityRadioButtonMenuItem.setText(resourceMap.getString("mediumQualityRadioButtonMenuItem.text")); // NOI18N
+        mediumQualityRadioButtonMenuItem.setName("mediumQualityRadioButtonMenuItem"); // NOI18N
+        mediumQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mediumQualityRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(mediumQualityRadioButtonMenuItem);
 
-        jRadioButtonMenuItem3.setSelected(true);
-        jRadioButtonMenuItem3.setText(resourceMap.getString("jRadioButtonMenuItem3.text")); // NOI18N
-        jRadioButtonMenuItem3.setName("jRadioButtonMenuItem3"); // NOI18N
-        viewMenu.add(jRadioButtonMenuItem3);
+        highQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        highQualityRadioButtonMenuItem.setSelected(true);
+        highQualityRadioButtonMenuItem.setText(resourceMap.getString("highQualityRadioButtonMenuItem.text")); // NOI18N
+        highQualityRadioButtonMenuItem.setName("highQualityRadioButtonMenuItem"); // NOI18N
+        highQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                highQualityRadioButtonMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(highQualityRadioButtonMenuItem);
 
         menuBar.add(viewMenu);
 
@@ -579,19 +602,31 @@ String response = JOptionPane.showInputDialog("Move curves:", "0 x 0");
     }
 }//GEN-LAST:event_translateCurvesMenuItemActionPerformed
 
+private void highQualityRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_highQualityRadioButtonMenuItemActionPerformed
+    bezierPanel.setQuality(Curve.HIGH_QUALITY);
+}//GEN-LAST:event_highQualityRadioButtonMenuItemActionPerformed
+
+private void mediumQualityRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mediumQualityRadioButtonMenuItemActionPerformed
+    bezierPanel.setQuality(Curve.MEDIUM_QUALITY);
+}//GEN-LAST:event_mediumQualityRadioButtonMenuItemActionPerformed
+
+private void lowQualityRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowQualityRadioButtonMenuItemActionPerformed
+    bezierPanel.setQuality(Curve.LOW_QUALITY);
+}//GEN-LAST:event_lowQualityRadioButtonMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
     private javax.swing.JMenuItem degreeElevationMenuItem;
+    private javax.swing.JRadioButtonMenuItem highQualityRadioButtonMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
-    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
+    private javax.swing.JRadioButtonMenuItem lowQualityRadioButtonMenuItem;
     private javax.swing.JPanel mainPanel;
+    private javax.swing.JRadioButtonMenuItem mediumQualityRadioButtonMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem newMenuItem;
     private javax.swing.JMenuItem openMenuItem;
