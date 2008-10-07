@@ -15,7 +15,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="488" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="483" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -74,6 +74,28 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveMenuItemActionPerformed"/>
               </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator5">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator5" noResource="true"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="exportMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+E"/>
+                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="exportMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="exportMenuItem" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exportMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JSeparator" name="jSeparator6">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator6" noResource="true"/>
+              </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitMenuItem">
               <Properties>
@@ -254,6 +276,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Shift+Ctrl+1"/>
                 </Property>
+                <Property name="text" type="java.lang.String" resourceKey="lowQualityRadioButtonMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="lowQualityRadioButtonMenuItem" noResource="true"/>
               </Properties>
               <Events>
@@ -265,6 +288,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="Shift+Ctrl+2"/>
                 </Property>
+                <Property name="text" type="java.lang.String" resourceKey="mediumQualityRadioButtonMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="mediumQualityRadioButtonMenuItem" noResource="true"/>
               </Properties>
               <Events>
@@ -277,6 +301,7 @@
                   <KeyStroke key="Shift+Ctrl+3"/>
                 </Property>
                 <Property name="selected" type="boolean" value="true"/>
+                <Property name="text" type="java.lang.String" resourceKey="highQualityRadioButtonMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="highQualityRadioButtonMenuItem" noResource="true"/>
               </Properties>
               <Events>
