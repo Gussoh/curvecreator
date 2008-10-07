@@ -1,6 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * This is the Model-View-Controller class ;) We call it GOD-mode
  */
 package bezier;
 
@@ -37,6 +36,7 @@ import javax.swing.JPanel;
 public class BezierPanel extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener, ComponentListener {
 
     private boolean viewControlPolygon = true;
+    private boolean viewCoordinateSystem = true;
     private BezierView bezierView;
     private double snap = 3;
     private List<Curve> curves = new ArrayList<Curve>();
@@ -152,13 +152,15 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         Stroke coordinateSystemStroke = new BasicStroke(3);
 
         // coordinate system
-        g.setStroke(coordinateSystemStroke);
-        g.setColor(Color.WHITE);
+        if (viewCoordinateSystem) {
+            g.setStroke(coordinateSystemStroke);
+            g.setColor(Color.WHITE);
 
-        Line2D x = new Line2D.Double(0, scaleAndTranslatePoint(new Point2D.Double(0, 0)).getY(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getY());
-        g.draw(x);
-        Line2D y = new Line2D.Double(scaleAndTranslatePoint(new Point2D.Double(0, 0)).getX(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getX(), 0);
-        g.draw(y);
+            Line2D x = new Line2D.Double(0, scaleAndTranslatePoint(new Point2D.Double(0, 0)).getY(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getY());
+            g.draw(x);
+            Line2D y = new Line2D.Double(scaleAndTranslatePoint(new Point2D.Double(0, 0)).getX(), 0, scaleAndTranslatePoint(new Point2D.Double(getWidth(), getHeight())).getX(), 0);
+            g.draw(y);
+        }
 
         for (Curve curve : curves) {
 
@@ -184,7 +186,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                 g.setColor(Color.GREEN);
                 g.setStroke(curveStroke);
             }
-            
+
             curve.paintCurve(g, quality);
 
             if (viewControlPoints || hovered) {
@@ -236,6 +238,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         currentCurve = null;
         proposedPoint = null;
         hoverPoint = null;
+        stateChanged();
         resetView();
     }
 
@@ -279,6 +282,11 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         this.viewControlPoints = viewControlPoints;
         repaint();
 
+    }
+
+    public void setViewCoordinateAxis(boolean viewCoordinateSystem) {
+        this.viewCoordinateSystem = viewCoordinateSystem;
+        repaint();
     }
 
     private Point2D getClosestControlPoint(Point2D point, double maxDistance, Point2D butNotThisOne) {
