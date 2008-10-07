@@ -92,9 +92,11 @@ public class CPlotSerializer implements Serializer {
 
         boolean weightWarningShowed = false;
         boolean zWarningShowed = false;
+        boolean idWarningShowed = false;
         String zValue = null;
         String weightWarningMessage = "Weight was not 1. Rational bezier curves not supported. ";
-        String zWarningMessage = "Different Z values. 3D bezier curves not supported.";
+        String zWarningMessage = "Different Z values. 3D bezier curves not supported. ";
+        String idWarningMessage = "A curve with the same ID is already found, using first available id instead. ";
 
         String warnings = "";
         try {
@@ -114,6 +116,18 @@ public class CPlotSerializer implements Serializer {
                         points.put(temp, temp);
                     }
 
+                    if(curves.containsKey(id)) { // id already exists
+                        idWarningShowed = true;
+                        if (supressWarnings) {
+                            warnings += idWarningMessage;
+                        } else {
+                            JOptionPane.showMessageDialog(bp, idWarningMessage, "Parse warning", JOptionPane.WARNING_MESSAGE);
+                        }
+                        
+                        while(curves.containsKey(id)) {
+                            id++;
+                        }
+                    }
                     curves.put(id, c);
                     zValue = st.nextToken(); // z-variable
 
