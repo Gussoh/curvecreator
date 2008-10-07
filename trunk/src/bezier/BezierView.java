@@ -101,7 +101,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
                 }
             }
         });
-        
+
         ButtonGroup bg = new ButtonGroup();
         bg.add(lowQualityRadioButtonMenuItem);
         bg.add(mediumQualityRadioButtonMenuItem);
@@ -148,6 +148,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         viewMenu = new javax.swing.JMenu();
         viewControlPolyconCheckboxMenuItem = new javax.swing.JCheckBoxMenuItem();
         viewControlPointsCheckBoxMenuItem = new javax.swing.JCheckBoxMenuItem();
+        viewCoordinateAxelsMenuItem = new javax.swing.JCheckBoxMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
         zoomFitMenuItem = new javax.swing.JMenuItem();
         resetViewMenuItem = new javax.swing.JMenuItem();
@@ -177,7 +178,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 488, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -295,6 +296,17 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         });
         viewMenu.add(viewControlPointsCheckBoxMenuItem);
 
+        viewCoordinateAxelsMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_K, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        viewCoordinateAxelsMenuItem.setSelected(true);
+        viewCoordinateAxelsMenuItem.setText(resourceMap.getString("viewCoordinateAxelsMenuItem.text")); // NOI18N
+        viewCoordinateAxelsMenuItem.setName("viewCoordinateAxelsMenuItem"); // NOI18N
+        viewCoordinateAxelsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewCoordinateAxelsMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(viewCoordinateAxelsMenuItem);
+
         jSeparator1.setName("jSeparator1"); // NOI18N
         viewMenu.add(jSeparator1);
 
@@ -335,7 +347,6 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         viewMenu.add(jSeparator4);
 
         lowQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        lowQualityRadioButtonMenuItem.setText(resourceMap.getString("lowQualityRadioButtonMenuItem.text")); // NOI18N
         lowQualityRadioButtonMenuItem.setName("lowQualityRadioButtonMenuItem"); // NOI18N
         lowQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -345,7 +356,6 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         viewMenu.add(lowQualityRadioButtonMenuItem);
 
         mediumQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_2, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        mediumQualityRadioButtonMenuItem.setText(resourceMap.getString("mediumQualityRadioButtonMenuItem.text")); // NOI18N
         mediumQualityRadioButtonMenuItem.setName("mediumQualityRadioButtonMenuItem"); // NOI18N
         mediumQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -356,7 +366,6 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         highQualityRadioButtonMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_3, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         highQualityRadioButtonMenuItem.setSelected(true);
-        highQualityRadioButtonMenuItem.setText(resourceMap.getString("highQualityRadioButtonMenuItem.text")); // NOI18N
         highQualityRadioButtonMenuItem.setName("highQualityRadioButtonMenuItem"); // NOI18N
         highQualityRadioButtonMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -459,6 +468,7 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 in.close();
                 try {
                     sps.setData(sb.toString(), false);
+                    bezierPanel.zoomFit();
                 } catch (ParseException ex) {
                     JOptionPane.showMessageDialog(mainPanel, "Could not parse file:\n" + ex, "Error parsing", JOptionPane.ERROR_MESSAGE);
                 }
@@ -481,10 +491,10 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         if (jfc.getSelectedFile() != null) {
             File outFile = jfc.getSelectedFile();
             // Fix file extension
-            if(!outFile.getName().toLowerCase().endsWith(".dat")) {
+            if (!outFile.getName().toLowerCase().endsWith(".dat")) {
                 outFile = new File(outFile.getAbsolutePath() + ".dat");
             }
-            
+
             FileWriter fw = null;
             try {
                 CPlotSerializer sps = new CPlotSerializer(bezierPanel);
@@ -588,7 +598,7 @@ private void scaleCurvesMenuItemActionPerformed(java.awt.event.ActionEvent evt) 
 }//GEN-LAST:event_scaleCurvesMenuItemActionPerformed
 
 private void translateCurvesMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_translateCurvesMenuItemActionPerformed
-String response = JOptionPane.showInputDialog("Move curves:", "0 x 0");
+    String response = JOptionPane.showInputDialog("Move curves:", "0 x 0");
 
     if (response != null) {
         String[] parts = response.split("x");
@@ -613,6 +623,10 @@ private void mediumQualityRadioButtonMenuItemActionPerformed(java.awt.event.Acti
 private void lowQualityRadioButtonMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lowQualityRadioButtonMenuItemActionPerformed
     bezierPanel.setQuality(Curve.LOW_QUALITY);
 }//GEN-LAST:event_lowQualityRadioButtonMenuItemActionPerformed
+
+private void viewCoordinateAxelsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewCoordinateAxelsMenuItemActionPerformed
+    bezierPanel.setViewCoordinateAxis(viewCoordinateAxelsMenuItem.isSelected());
+}//GEN-LAST:event_viewCoordinateAxelsMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
@@ -641,6 +655,7 @@ private void lowQualityRadioButtonMenuItemActionPerformed(java.awt.event.ActionE
     private javax.swing.JMenuItem translateCurvesMenuItem;
     private javax.swing.JCheckBoxMenuItem viewControlPointsCheckBoxMenuItem;
     private javax.swing.JCheckBoxMenuItem viewControlPolyconCheckboxMenuItem;
+    private javax.swing.JCheckBoxMenuItem viewCoordinateAxelsMenuItem;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JMenuItem zoomFitMenuItem;
     // End of variables declaration//GEN-END:variables
