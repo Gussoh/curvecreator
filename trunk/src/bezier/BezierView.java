@@ -146,6 +146,10 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         resetViewMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         cplotMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jSeparator4 = new javax.swing.JSeparator();
+        jRadioButtonMenuItem1 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem2 = new javax.swing.JRadioButtonMenuItem();
+        jRadioButtonMenuItem3 = new javax.swing.JRadioButtonMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -166,7 +170,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 488, Short.MAX_VALUE)
+            .addGap(0, 483, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -319,6 +323,24 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
             }
         });
         viewMenu.add(cplotMenuItem);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        viewMenu.add(jSeparator4);
+
+        jRadioButtonMenuItem1.setSelected(true);
+        jRadioButtonMenuItem1.setText(resourceMap.getString("jRadioButtonMenuItem1.text")); // NOI18N
+        jRadioButtonMenuItem1.setName("jRadioButtonMenuItem1"); // NOI18N
+        viewMenu.add(jRadioButtonMenuItem1);
+
+        jRadioButtonMenuItem2.setSelected(true);
+        jRadioButtonMenuItem2.setText(resourceMap.getString("jRadioButtonMenuItem2.text")); // NOI18N
+        jRadioButtonMenuItem2.setName("jRadioButtonMenuItem2"); // NOI18N
+        viewMenu.add(jRadioButtonMenuItem2);
+
+        jRadioButtonMenuItem3.setSelected(true);
+        jRadioButtonMenuItem3.setText(resourceMap.getString("jRadioButtonMenuItem3.text")); // NOI18N
+        jRadioButtonMenuItem3.setName("jRadioButtonMenuItem3"); // NOI18N
+        viewMenu.add(jRadioButtonMenuItem3);
 
         menuBar.add(viewMenu);
 
@@ -562,9 +584,13 @@ String response = JOptionPane.showInputDialog("Move curves:", "0 x 0");
     private javax.swing.JMenuItem degreeElevationMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
+    private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JSeparator jSeparator4;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem newMenuItem;
