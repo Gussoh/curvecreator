@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.text.ParseException;
-import javax.swing.event.ChangeEvent;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.SingleFrameApplication;
@@ -18,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.Timer;
@@ -434,10 +434,16 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         jfc.setFileFilter(new FileNameExtensionFilter("CPlot File", "dat"));
         jfc.showSaveDialog(bezierPanel);
         if (jfc.getSelectedFile() != null) {
+            File outFile = jfc.getSelectedFile();
+            // Fix file extension
+            if(!outFile.getName().toLowerCase().endsWith(".dat")) {
+                outFile = new File(outFile.getAbsolutePath() + ".dat");
+            }
+            
             FileWriter fw = null;
             try {
                 CPlotSerializer sps = new CPlotSerializer(bezierPanel);
-                fw = new FileWriter(jfc.getSelectedFile());
+                fw = new FileWriter(outFile);
                 fw.append(sps.getData());
             } catch (IOException ex) {
                 saveSucceded = false;
