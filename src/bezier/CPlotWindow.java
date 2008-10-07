@@ -63,7 +63,6 @@ public class CPlotWindow extends JFrame implements StateChangeListener, WindowLi
     }
 
     public void windowClosing(WindowEvent e) {
-        bp.removeChangeListener(this);
     }
 
     public void windowClosed(WindowEvent e) {
