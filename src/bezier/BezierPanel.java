@@ -154,7 +154,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         for (Curve curve : curves) {
 
             Point2D underHoverPoint = null;
-            if (hoverPoint != null) {
+            if (proposedPoint != null) {
                 underHoverPoint = getClosestControlPoint(proposedPoint, snap, proposedPoint);
             }
 
@@ -222,9 +222,13 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
 
     public void reset() {
         curves.clear();
+        movingPoint = null;
+        currentCurve = null;
+        proposedPoint = null;
+        hoverPoint = null;
         resetView();
     }
-    
+
     public void resetView() {
         scale = 1;
         translate.setLocation(getWidth() * .05, getHeight() * .95);
