@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.event.ComponentEvent;
@@ -92,7 +93,6 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         }
 
         stateChanged();
-        repaint();
     }
 
     public void translateAllCurves(double x, double y) {
@@ -107,13 +107,13 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         }
 
         stateChanged();
-        repaint();
     }
 
     private void stateChanged() {
         for (StateChangeListener changeListener : changeListeners) {
             changeListener.stateChanged();
         }
+        repaint();
     }
 
     public BezierView getBezierView() {
@@ -123,7 +123,6 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     public void setCurves(List<Curve> curves) {
         this.curves = curves;
         stateChanged();
-        repaint();
     }
 
     public List<Curve> getCurves() {
@@ -267,6 +266,32 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
 
             if (c != null && c instanceof BezierCurve) {
                 ((BezierCurve) c).degreeElevation();
+                stateChanged();
+            }
+        }
+    }
+
+    public void splitCurve(Point point) {
+        Point2D closest = getClosestControlPoint(scaleAndTranslatePoint(point), snap);
+
+        if (closest != null) {
+            Curve c = null;
+
+            for (Curve curve : curves) {
+                for (Point2D controlPoint : curve.getControlPoints()) {
+                    if (closest.equals(controlPoint)) {
+                        c = curve;
+                    }
+
+                }
+            }
+
+            if (c != null && c instanceof BezierCurve) {
+                curves.remove(c);
+                curves.add(new BezierCurve(BezierCurve.splitLeft(c.getControlPoints())));
+                curves.add(new BezierCurve(BezierCurve.splitRight(c.getControlPoints())));
+                
+                stateChanged();
             }
 
         }
@@ -296,8 +321,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
             for (Point2D controlPoint : curve.getControlPoints()) {
                 if (point.distance(controlPoint) <= distance && controlPoint != butNotThisOne) {
                     closest = controlPoint;
-                    distance =
-                            point.distance(controlPoint);
+                    distance = point.distance(controlPoint);
                 }
 
             }
@@ -314,8 +338,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
             for (Point2D controlPoint : curve.getControlPoints()) {
                 if (point.distance(controlPoint) <= distance) {
                     closest = controlPoint;
-                    distance =
-                            point.distance(controlPoint);
+                    distance = point.distance(controlPoint);
                 }
 
             }
@@ -396,8 +419,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                         }
 
                         curves.add(currentCurve);
-                        proposedPoint =
-                                scaleAndTranslatePoint(e.getPoint());
+                        proposedPoint = scaleAndTranslatePoint(e.getPoint());
                         currentCurve.addControlPoint(proposedPoint);
 
                         stateChanged();

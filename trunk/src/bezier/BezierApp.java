@@ -5,6 +5,7 @@
 
 package bezier;
 
+import java.util.EventObject;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -13,11 +14,14 @@ import org.jdesktop.application.SingleFrameApplication;
  */
 public class BezierApp extends SingleFrameApplication {
 
+    BezierView bezierView;
+    
     /**
      * At startup create and show the main frame of the application.
      */
     @Override protected void startup() {
-        show(new BezierView(this));
+        bezierView = new BezierView(this);
+        show(bezierView);
     }
 
     /**
@@ -26,6 +30,15 @@ public class BezierApp extends SingleFrameApplication {
      * builder, so this additional configuration is not needed.
      */
     @Override protected void configureWindow(java.awt.Window root) {
+        addExitListener(new ExitListener() {
+
+            public boolean canExit(EventObject arg0) {
+                return bezierView.maybeSaveFile();
+            }
+
+            public void willExit(EventObject arg0) {
+            }
+        });
     }
 
     /**

@@ -36,6 +36,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class BezierView extends FrameView implements MouseListener, StateChangeListener {
 
     private boolean degreeElevation = false;
+    private boolean splitCurve = false;
     private BezierPanel bezierPanel;
     private boolean saved = true;
     private CPlotWindow cPlotWindow;
@@ -45,6 +46,8 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         initComponents();
 
+        getFrame().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
@@ -142,6 +145,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         degreeElevationMenuItem = new javax.swing.JMenuItem();
+        splitCurveMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         scaleCurvesMenuItem = new javax.swing.JMenuItem();
         translateCurvesMenuItem = new javax.swing.JMenuItem();
@@ -229,7 +233,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
-        degreeElevationMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        degreeElevationMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         degreeElevationMenuItem.setText(resourceMap.getString("degreeElevationMenuItem.text")); // NOI18N
         degreeElevationMenuItem.setName("degreeElevationMenuItem"); // NOI18N
         degreeElevationMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -239,10 +243,20 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         });
         jMenu1.add(degreeElevationMenuItem);
 
+        splitCurveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        splitCurveMenuItem.setText(resourceMap.getString("splitCurveMenuItem.text")); // NOI18N
+        splitCurveMenuItem.setName("splitCurveMenuItem"); // NOI18N
+        splitCurveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                splitCurveMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(splitCurveMenuItem);
+
         jSeparator3.setName("jSeparator3"); // NOI18N
         jMenu1.add(jSeparator3);
 
-        scaleCurvesMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        scaleCurvesMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         scaleCurvesMenuItem.setText(resourceMap.getString("scaleCurvesMenuItem.text")); // NOI18N
         scaleCurvesMenuItem.setName("scaleCurvesMenuItem"); // NOI18N
         scaleCurvesMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -252,7 +266,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         });
         jMenu1.add(scaleCurvesMenuItem);
 
-        translateCurvesMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        translateCurvesMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         translateCurvesMenuItem.setText(resourceMap.getString("translateCurvesMenuItem.text")); // NOI18N
         translateCurvesMenuItem.setName("translateCurvesMenuItem"); // NOI18N
         translateCurvesMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -547,7 +561,7 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
      * 
      * @return true if new or open should proceed, otherwise false.
      */
-    private boolean maybeSaveFile() {
+    public boolean maybeSaveFile() {
         if (saved) {
             return true;
         } else {
@@ -664,6 +678,11 @@ private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     box.setVisible(true);
 }//GEN-LAST:event_helpMenuItemActionPerformed
 
+private void splitCurveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_splitCurveMenuItemActionPerformed
+    translateAndScaleLabel.setText("Click on a control point of the bezier curve");
+    splitCurve = true;
+}//GEN-LAST:event_splitCurveMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
     private javax.swing.JMenuItem curveInfoMenuItem;
@@ -686,6 +705,7 @@ private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private javax.swing.JMenuItem resetViewMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenuItem scaleCurvesMenuItem;
+    private javax.swing.JMenuItem splitCurveMenuItem;
     private javax.swing.JLabel statusAnimationLabel;
     public javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
@@ -705,11 +725,15 @@ private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     private JDialog aboutBox;
 
     public void mouseClicked(MouseEvent e) {
-        if (degreeElevation) {
-            degreeElevation = false;
-            bezierPanel.degreeElevation(e.getPoint());
+        if (degreeElevation || splitCurve) {
             translateAndScaleLabel.setText("");
-
+            if(degreeElevation) {
+                bezierPanel.degreeElevation(e.getPoint());
+            } else if(splitCurve) {
+                bezierPanel.splitCurve(e.getPoint());
+            }
+            degreeElevation = false;
+            splitCurve = false;
         }
 
     }

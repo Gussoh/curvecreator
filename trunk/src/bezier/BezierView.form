@@ -98,13 +98,25 @@
             <MenuItem class="javax.swing.JMenuItem" name="degreeElevationMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+Ctrl+E"/>
+                  <KeyStroke key="Ctrl+Alt+E"/>
                 </Property>
                 <Property name="text" type="java.lang.String" resourceKey="degreeElevationMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="degreeElevationMenuItem" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="degreeElevationMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="splitCurveMenuItem">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+Alt+S"/>
+                </Property>
+                <Property name="text" type="java.lang.String" resourceKey="splitCurveMenuItem.text"/>
+                <Property name="name" type="java.lang.String" value="splitCurveMenuItem" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="splitCurveMenuItemActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator3">
@@ -115,7 +127,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="scaleCurvesMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+Ctrl+S"/>
+                  <KeyStroke key="Ctrl+Alt+C"/>
                 </Property>
                 <Property name="text" type="java.lang.String" resourceKey="scaleCurvesMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="scaleCurvesMenuItem" noResource="true"/>
@@ -127,7 +139,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="translateCurvesMenuItem">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="Shift+Ctrl+M"/>
+                  <KeyStroke key="Ctrl+Alt+M"/>
                 </Property>
                 <Property name="text" type="java.lang.String" resourceKey="translateCurvesMenuItem.text"/>
                 <Property name="name" type="java.lang.String" value="translateCurvesMenuItem" noResource="true"/>
