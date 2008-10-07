@@ -159,6 +159,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         mediumQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         highQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
+        helpMenuItem = new javax.swing.JMenuItem();
         curveInfoMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
@@ -379,6 +380,16 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
+
+        helpMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
+        helpMenuItem.setText(resourceMap.getString("helpMenuItem.text")); // NOI18N
+        helpMenuItem.setName("helpMenuItem"); // NOI18N
+        helpMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                helpMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(helpMenuItem);
 
         curveInfoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         curveInfoMenuItem.setText(resourceMap.getString("curveInfoMenuItem.text")); // NOI18N
@@ -647,10 +658,17 @@ private void curveInfoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {/
     box.setVisible(true);
 }//GEN-LAST:event_curveInfoMenuItemActionPerformed
 
+private void helpMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpMenuItemActionPerformed
+    HelpBox box = new HelpBox(getFrame());
+    box.setLocationRelativeTo(getFrame());
+    box.setVisible(true);
+}//GEN-LAST:event_helpMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
     private javax.swing.JMenuItem curveInfoMenuItem;
     private javax.swing.JMenuItem degreeElevationMenuItem;
+    private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JRadioButtonMenuItem highQualityRadioButtonMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
     private javax.swing.JMenu jMenu1;
