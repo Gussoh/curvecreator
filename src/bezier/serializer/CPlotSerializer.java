@@ -132,7 +132,7 @@ public class CPlotSerializer implements Serializer {
                         if (points.containsKey(temp)) {
                             c.addControlPoint(points.get(temp));
                         } else {
-                            c = new BezierCurve(temp);
+                            c.addControlPoint(temp);
                             points.put(temp, temp);
                         }
 
