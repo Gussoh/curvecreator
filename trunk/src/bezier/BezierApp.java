@@ -1,5 +1,6 @@
 /*
  * BezierApp.java
+ * This is supposed to be the model class...
  */
 
 package bezier;

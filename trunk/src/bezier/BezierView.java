@@ -159,6 +159,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         mediumQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         highQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
+        curveInfoMenuItem = new javax.swing.JMenuItem();
         javax.swing.JMenuItem aboutMenuItem = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
         javax.swing.JSeparator statusPanelSeparator = new javax.swing.JSeparator();
@@ -378,6 +379,16 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         helpMenu.setText(resourceMap.getString("helpMenu.text")); // NOI18N
         helpMenu.setName("helpMenu"); // NOI18N
+
+        curveInfoMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        curveInfoMenuItem.setText(resourceMap.getString("curveInfoMenuItem.text")); // NOI18N
+        curveInfoMenuItem.setName("curveInfoMenuItem"); // NOI18N
+        curveInfoMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                curveInfoMenuItemActionPerformed(evt);
+            }
+        });
+        helpMenu.add(curveInfoMenuItem);
 
         aboutMenuItem.setAction(actionMap.get("showAboutBox")); // NOI18N
         aboutMenuItem.setName("aboutMenuItem"); // NOI18N
@@ -628,8 +639,17 @@ private void viewCoordinateAxelsMenuItemActionPerformed(java.awt.event.ActionEve
     bezierPanel.setViewCoordinateAxis(viewCoordinateAxelsMenuItem.isSelected());
 }//GEN-LAST:event_viewCoordinateAxelsMenuItemActionPerformed
 
+private void curveInfoMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_curveInfoMenuItemActionPerformed
+
+    JFrame mainFrame = BezierApp.getApplication().getMainFrame();
+    InfoBox box = new InfoBox(getFrame(), bezierPanel);
+    box.setLocationRelativeTo(mainFrame);
+    box.setVisible(true);
+}//GEN-LAST:event_curveInfoMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
+    private javax.swing.JMenuItem curveInfoMenuItem;
     private javax.swing.JMenuItem degreeElevationMenuItem;
     private javax.swing.JRadioButtonMenuItem highQualityRadioButtonMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
