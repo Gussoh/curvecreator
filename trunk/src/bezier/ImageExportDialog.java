@@ -98,7 +98,7 @@ public class ImageExportDialog extends javax.swing.JDialog {
         g2.setColor(curveColor);
         g2.setStroke(new BasicStroke(strokeWidth, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
         for (Curve curve : curves) {
-            curve.paintCurve(g2, quality);
+            curve.paintCurve(g2, quality, true);
         }
     }
 

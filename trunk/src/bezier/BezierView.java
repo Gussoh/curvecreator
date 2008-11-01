@@ -3,8 +3,12 @@
  */
 package bezier;
 
+import bezier.curves.BSplineCurve;
+import bezier.curves.BezierCurve;
 import bezier.curves.Curve;
 import bezier.serializer.CPlotSerializer;
+import bezier.serializer.JianminSerializer;
+import bezier.serializer.Serializer;
 import java.awt.BorderLayout;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -39,7 +43,9 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
     private boolean splitCurve = false;
     private BezierPanel bezierPanel;
     private boolean saved = true;
-    private CPlotWindow cPlotWindow;
+    private SerializerWindow cPlotWindow;
+    private SerializerWindow jianminWindow;
+    private boolean editBSplineCurve;
 
     public BezierView(SingleFrameApplication app) {
         super(app);
@@ -47,7 +53,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         initComponents();
 
         getFrame().setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        
+
         // status bar initialization - message timeout, idle icon and busy animation, etc
         ResourceMap resourceMap = getResourceMap();
         int messageTimeout = resourceMap.getInteger("StatusBar.messageTimeout");
@@ -146,9 +152,13 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         exportMenuItem = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         javax.swing.JMenuItem exitMenuItem = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        bezierCurveMenuItem = new javax.swing.JRadioButtonMenuItem();
+        bSplineMenuItem = new javax.swing.JRadioButtonMenuItem();
         jMenu1 = new javax.swing.JMenu();
         degreeElevationMenuItem = new javax.swing.JMenuItem();
         splitCurveMenuItem = new javax.swing.JMenuItem();
+        editBSplineMenuItem = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
         scaleCurvesMenuItem = new javax.swing.JMenuItem();
         translateCurvesMenuItem = new javax.swing.JMenuItem();
@@ -161,10 +171,14 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         resetViewMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JSeparator();
         cplotMenuItem = new javax.swing.JCheckBoxMenuItem();
+        jianminCheckboxMenuItem = new javax.swing.JCheckBoxMenuItem();
         jSeparator4 = new javax.swing.JSeparator();
         lowQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         mediumQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
         highQualityRadioButtonMenuItem = new javax.swing.JRadioButtonMenuItem();
+        jSeparator7 = new javax.swing.JSeparator();
+        adaptiveRenderingMenuItem = new javax.swing.JRadioButtonMenuItem();
+        uniformRenderingMenuItem = new javax.swing.JRadioButtonMenuItem();
         javax.swing.JMenu helpMenu = new javax.swing.JMenu();
         helpMenuItem = new javax.swing.JMenuItem();
         curveInfoMenuItem = new javax.swing.JMenuItem();
@@ -176,6 +190,8 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         progressBar = new javax.swing.JProgressBar();
         statusMessageLabel = new javax.swing.JLabel();
         hoverPointPositionLabel = new javax.swing.JLabel();
+        curveGroup = new javax.swing.ButtonGroup();
+        renderMethodGroup = new javax.swing.ButtonGroup();
 
         mainPanel.setName("mainPanel"); // NOI18N
 
@@ -187,7 +203,7 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 483, Short.MAX_VALUE)
+            .addGap(0, 488, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -249,6 +265,34 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
 
         menuBar.add(fileMenu);
 
+        jMenu2.setText(resourceMap.getString("jMenu2.text")); // NOI18N
+        jMenu2.setName("jMenu2"); // NOI18N
+
+        bezierCurveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        curveGroup.add(bezierCurveMenuItem);
+        bezierCurveMenuItem.setText(resourceMap.getString("bezierCurveMenuItem.text")); // NOI18N
+        bezierCurveMenuItem.setName("bezierCurveMenuItem"); // NOI18N
+        bezierCurveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bezierCurveMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(bezierCurveMenuItem);
+
+        bSplineMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
+        curveGroup.add(bSplineMenuItem);
+        bSplineMenuItem.setSelected(true);
+        bSplineMenuItem.setText(resourceMap.getString("bSplineMenuItem.text")); // NOI18N
+        bSplineMenuItem.setName("bSplineMenuItem"); // NOI18N
+        bSplineMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bSplineMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu2.add(bSplineMenuItem);
+
+        menuBar.add(jMenu2);
+
         jMenu1.setText(resourceMap.getString("jMenu1.text")); // NOI18N
         jMenu1.setName("jMenu1"); // NOI18N
 
@@ -271,6 +315,16 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
             }
         });
         jMenu1.add(splitCurveMenuItem);
+
+        editBSplineMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        editBSplineMenuItem.setText(resourceMap.getString("editBSplineMenuItem.text")); // NOI18N
+        editBSplineMenuItem.setName("editBSplineMenuItem"); // NOI18N
+        editBSplineMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editBSplineMenuItemActionPerformed(evt);
+            }
+        });
+        jMenu1.add(editBSplineMenuItem);
 
         jSeparator3.setName("jSeparator3"); // NOI18N
         jMenu1.add(jSeparator3);
@@ -378,6 +432,16 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
         });
         viewMenu.add(cplotMenuItem);
 
+        jianminCheckboxMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_J, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jianminCheckboxMenuItem.setText(resourceMap.getString("jianminCheckboxMenuItem.text")); // NOI18N
+        jianminCheckboxMenuItem.setName("jianminCheckboxMenuItem"); // NOI18N
+        jianminCheckboxMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jianminCheckboxMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(jianminCheckboxMenuItem);
+
         jSeparator4.setName("jSeparator4"); // NOI18N
         viewMenu.add(jSeparator4);
 
@@ -411,6 +475,32 @@ public class BezierView extends FrameView implements MouseListener, StateChangeL
             }
         });
         viewMenu.add(highQualityRadioButtonMenuItem);
+
+        jSeparator7.setName("jSeparator7"); // NOI18N
+        viewMenu.add(jSeparator7);
+
+        adaptiveRenderingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        renderMethodGroup.add(adaptiveRenderingMenuItem);
+        adaptiveRenderingMenuItem.setSelected(true);
+        adaptiveRenderingMenuItem.setText(resourceMap.getString("adaptiveRenderingMenuItem.text")); // NOI18N
+        adaptiveRenderingMenuItem.setName("adaptiveRenderingMenuItem"); // NOI18N
+        adaptiveRenderingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adaptiveRenderingMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(adaptiveRenderingMenuItem);
+
+        uniformRenderingMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        renderMethodGroup.add(uniformRenderingMenuItem);
+        uniformRenderingMenuItem.setText(resourceMap.getString("uniformRenderingMenuItem.text")); // NOI18N
+        uniformRenderingMenuItem.setName("uniformRenderingMenuItem"); // NOI18N
+        uniformRenderingMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uniformRenderingMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(uniformRenderingMenuItem);
 
         menuBar.add(viewMenu);
 
@@ -505,14 +595,18 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             return;
         }
 
+        Serializer cPlotSerializer = new CPlotSerializer(bezierPanel);
+        Serializer jianminSerializer = new JianminSerializer(bezierPanel);
         JFileChooser jfc = new JFileChooser();
-        jfc.setFileFilter(new FileNameExtensionFilter("CPlot File", "dat"));
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        jfc.addChoosableFileFilter(new FileNameExtensionFilter(cPlotSerializer.getName(), cPlotSerializer.getFileExtension()));
+        jfc.addChoosableFileFilter(new FileNameExtensionFilter(jianminSerializer.getName(), jianminSerializer.getFileExtension()));
+
         jfc.showOpenDialog(bezierPanel);
         if (jfc.getSelectedFile() != null) {
 
             bezierPanel.reset();
             try {
-                CPlotSerializer sps = new CPlotSerializer(bezierPanel);
                 BufferedReader in = new BufferedReader(new FileReader(jfc.getSelectedFile()));
                 StringBuilder sb = new StringBuilder();
                 //read file into a string
@@ -524,12 +618,26 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                     sb.append(str).append('\n');
                 }
                 in.close();
+                boolean parsed = false;
                 try {
-                    sps.setData(sb.toString(), false);
-                    bezierPanel.zoomFit();
+                    cPlotSerializer.setData(sb.toString(), true);
+                    parsed = true;
                 } catch (ParseException ex) {
-                    JOptionPane.showMessageDialog(mainPanel, "Could not parse file:\n" + ex, "Error parsing", JOptionPane.ERROR_MESSAGE);
                 }
+                if (!parsed) {
+                    try {
+                        jianminSerializer.setData(sb.toString(), true);
+                        parsed = true;
+                    } catch (ParseException ex) {
+                    }
+                }
+                if (!parsed) {
+                    JOptionPane.showMessageDialog(mainPanel, "Could not parse file:\n" + jfc.getSelectedFile(), "Error parsing", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                bezierPanel.zoomFit();
+
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(mainPanel, "Could not read file:\n" + ex, "Error reading", JOptionPane.ERROR_MESSAGE);
             }
@@ -544,23 +652,53 @@ private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
         boolean saveSucceded = true;
 
         JFileChooser jfc = new JFileChooser();
-        jfc.setFileFilter(new FileNameExtensionFilter("CPlot File", "dat"));
+
+        Serializer cplotSerializer = new CPlotSerializer(bezierPanel);
+        Serializer jianminSerializer = new JianminSerializer(bezierPanel);
+        FileNameExtensionFilter cplot = new FileNameExtensionFilter(cplotSerializer.getName(), cplotSerializer.getFileExtension());
+        FileNameExtensionFilter jianmin = new FileNameExtensionFilter(jianminSerializer.getName(), jianminSerializer.getFileExtension());
+        jfc.addChoosableFileFilter(cplot);
+        jfc.addChoosableFileFilter(jianmin);
+        jfc.setFileSelectionMode(JFileChooser.FILES_ONLY);
         jfc.showSaveDialog(bezierPanel);
         if (jfc.getSelectedFile() != null) {
             File outFile = jfc.getSelectedFile();
             // Fix file extension
-            if (!outFile.getName().toLowerCase().endsWith(".dat")) {
-                outFile = new File(outFile.getAbsolutePath() + ".dat");
+
+            String extension = "";
+            Serializer serializer = null;
+            if (jfc.getFileFilter() == cplot) {
+                extension = '.' + cplotSerializer.getFileExtension();
+                serializer = cplotSerializer;
+            } else {
+                extension = '.' + jianminSerializer.getFileExtension();
+                serializer = jianminSerializer;
+            }
+
+            if (!outFile.getName().toLowerCase().endsWith(extension)) {
+                outFile = new File(outFile.getAbsolutePath() + extension);
             }
 
             FileWriter fw = null;
             try {
-                CPlotSerializer sps = new CPlotSerializer(bezierPanel);
+
+                try {
+                    serializer.getData(false);
+                } catch (ParseException e) {
+                    int dialogAnswer = JOptionPane.showConfirmDialog(mainPanel, e.getMessage() + "\nDo you wish to try to convert the curves to supported format? You will not be able to restore original curves from saved file.", "Curves not supported", JOptionPane.YES_NO_CANCEL_OPTION);
+                    if (dialogAnswer != JOptionPane.YES_OPTION) {
+                        return false;
+                    }
+                }
+
                 fw = new FileWriter(outFile);
-                fw.append(sps.getData());
+                fw.append(serializer.getData(true));
             } catch (IOException ex) {
                 saveSucceded = false;
-                JOptionPane.showMessageDialog(mainPanel, "Could not write file:\n" + ex, "Error writing", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainPanel, "Could not write file:\n" + ex.getMessage(), "Error writing", JOptionPane.ERROR_MESSAGE);
+            } catch (ParseException ex) {
+                saveSucceded = false;
+                JOptionPane.showMessageDialog(mainPanel, "Could not write file:\n" + ex.getMessage(), "Error writing", JOptionPane.ERROR_MESSAGE);
             } finally {
                 try {
                     fw.close();
@@ -616,7 +754,7 @@ private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 private void cplotMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cplotMenuItemActionPerformed
     if (cplotMenuItem.isSelected()) {
         if (cPlotWindow == null) {
-            cPlotWindow = new CPlotWindow(bezierPanel);
+            cPlotWindow = new SerializerWindow(bezierPanel, new CPlotSerializer(bezierPanel));
         }
         cPlotWindow.setVisible(true);
     } else {
@@ -709,21 +847,61 @@ private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
     new ImageExportDialog(getFrame(), true, bezierPanel.getCurves());
 }//GEN-LAST:event_exportMenuItemActionPerformed
 
+private void bezierCurveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bezierCurveMenuItemActionPerformed
+    bezierPanel.setCurrentCurveType(BezierCurve.class);
+}//GEN-LAST:event_bezierCurveMenuItemActionPerformed
+
+private void bSplineMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSplineMenuItemActionPerformed
+    bezierPanel.setCurrentCurveType(BSplineCurve.class);
+}//GEN-LAST:event_bSplineMenuItemActionPerformed
+
+private void adaptiveRenderingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adaptiveRenderingMenuItemActionPerformed
+    bezierPanel.setAdaptiveRendering(true);
+}//GEN-LAST:event_adaptiveRenderingMenuItemActionPerformed
+
+private void uniformRenderingMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uniformRenderingMenuItemActionPerformed
+    bezierPanel.setAdaptiveRendering(false);
+}//GEN-LAST:event_uniformRenderingMenuItemActionPerformed
+
+private void jianminCheckboxMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jianminCheckboxMenuItemActionPerformed
+    if (jianminCheckboxMenuItem.isSelected()) {
+        if (jianminWindow == null) {
+            jianminWindow = new SerializerWindow(bezierPanel, new JianminSerializer(bezierPanel));
+        }
+        jianminWindow.setVisible(true);
+    } else {
+        jianminWindow.dispose();
+    }
+}//GEN-LAST:event_jianminCheckboxMenuItemActionPerformed
+
+private void editBSplineMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editBSplineMenuItemActionPerformed
+    translateAndScaleLabel.setText("Click on a control point of the B-Spline curve");
+    editBSplineCurve = true;
+}//GEN-LAST:event_editBSplineMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButtonMenuItem adaptiveRenderingMenuItem;
+    private javax.swing.JRadioButtonMenuItem bSplineMenuItem;
+    private javax.swing.JRadioButtonMenuItem bezierCurveMenuItem;
     private javax.swing.JCheckBoxMenuItem cplotMenuItem;
+    private javax.swing.ButtonGroup curveGroup;
     private javax.swing.JMenuItem curveInfoMenuItem;
     private javax.swing.JMenuItem degreeElevationMenuItem;
+    private javax.swing.JMenuItem editBSplineMenuItem;
     private javax.swing.JMenuItem exportMenuItem;
     private javax.swing.JMenuItem helpMenuItem;
     private javax.swing.JRadioButtonMenuItem highQualityRadioButtonMenuItem;
     public javax.swing.JLabel hoverPointPositionLabel;
     private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
+    private javax.swing.JCheckBoxMenuItem jianminCheckboxMenuItem;
     private javax.swing.JRadioButtonMenuItem lowQualityRadioButtonMenuItem;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JRadioButtonMenuItem mediumQualityRadioButtonMenuItem;
@@ -731,6 +909,7 @@ private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JMenuItem newMenuItem;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.ButtonGroup renderMethodGroup;
     private javax.swing.JMenuItem resetViewMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JMenuItem scaleCurvesMenuItem;
@@ -740,6 +919,7 @@ private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private javax.swing.JPanel statusPanel;
     public javax.swing.JLabel translateAndScaleLabel;
     private javax.swing.JMenuItem translateCurvesMenuItem;
+    private javax.swing.JRadioButtonMenuItem uniformRenderingMenuItem;
     private javax.swing.JCheckBoxMenuItem viewControlPointsCheckBoxMenuItem;
     private javax.swing.JCheckBoxMenuItem viewControlPolyconCheckboxMenuItem;
     private javax.swing.JCheckBoxMenuItem viewCoordinateAxelsMenuItem;
@@ -754,17 +934,22 @@ private void exportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GE
     private JDialog aboutBox;
 
     public void mouseClicked(MouseEvent e) {
-        if (degreeElevation || splitCurve) {
+        if (degreeElevation || splitCurve || editBSplineCurve) {
             translateAndScaleLabel.setText("");
-            if(degreeElevation) {
+            if (degreeElevation) {
                 bezierPanel.degreeElevation(e.getPoint());
-            } else if(splitCurve) {
+            } else if (splitCurve) {
                 bezierPanel.splitCurve(e.getPoint());
+            } else if (editBSplineCurve) {
+                BSplineCurve curve = bezierPanel.getBSplineCurve(e.getPoint());
+                if (curve != null && curve.isValid()) {
+                    new BSplineEditorDialog(bezierPanel, curve).setVisible(true);
+                }
             }
             degreeElevation = false;
             splitCurve = false;
+            editBSplineCurve = false;
         }
-
     }
 
     public void mousePressed(MouseEvent e) {

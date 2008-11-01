@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,8 +30,12 @@ public class BezierCurve extends Curve {
     }
 
     @Override
-    public void paintCurve(Graphics2D g, int quality) {
-        paintAdaptiveRendering(getControlPoints(), g, quality);
+    public void paintCurve(Graphics2D g, int quality, boolean adaptive) {
+        if(adaptive) {
+            paintAdaptiveRendering(getControlPoints(), g, quality);
+        } else {
+            paintUniform(g, quality);
+        }
     }
 
     private static double getMaxHeightByQuality(int quality) {
@@ -160,5 +165,51 @@ public class BezierCurve extends Curve {
         ncp.add(cp.get(n));
         
         setControlPoints(ncp);
+    }
+
+    private double[] getBasis(double t) {
+        int n = getControlPoints().size() - 1;
+        double[] basis = new double[n + 1];
+        for (int i = 0; i <= n; i++) {
+            basis[i] = choose(n, i) * Math.pow(1 - t, n - i) * Math.pow(t, i);
+        }
+        
+        return basis;
+    }
+
+    private void paintUniform(Graphics2D g, int quality) {
+        int numPoints = quality * 2 * getControlPoints().size();
+        Point2D[] points = new Point2D[numPoints];
+        
+        for (int currentPoint = 0; currentPoint < points.length; currentPoint++) {
+            double u = ((1.0 / (points.length - 1)) * currentPoint);
+            double N[] = getBasis(u);
+            double x = 0, y = 0;
+
+            for (int i = 0; i < getControlPoints().size(); i++) {
+                Point2D control = getControlPoints().get(i);
+                x += control.getX() * N[i];
+                y += control.getY() * N[i];
+            }
+
+            points[currentPoint] = new Point2D.Double(x, y);
+        }
+
+        for (int i = 0; i < points.length - 1; i++) {
+            Line2D l = new Line2D.Double(points[i], points[i + 1]);
+            g.draw(l);
+        }
+    }
+    
+    private double choose(int n, int k) {
+        return faculty(n) / (faculty(k) * faculty(n - k));
+    }
+    
+    private double faculty(int n) {
+        double sum = 1;
+        for (int i = 2; i <= n ; i++) {
+            sum *= i;
+        }
+        return sum;
     }
 }
