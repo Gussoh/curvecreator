@@ -4,7 +4,7 @@
  */
 package bezier;
 
-import bezier.serializer.CPlotSerializer;
+import bezier.serializer.Serializer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -17,24 +17,23 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
 
 /**
  *
  * @author Gussoh
  */
-public class CPlotWindow extends JFrame implements StateChangeListener, WindowListener, KeyListener {
+public class SerializerWindow extends JFrame implements StateChangeListener, WindowListener, KeyListener {
 
     private BezierPanel bp;
     private JTextArea t;
-    private CPlotSerializer cPlotSerializer;
+    private Serializer serializer;
     private Color defaultBackgroundColor;
     private JLabel statusPanel = new JLabel();
 
-    public CPlotWindow(BezierPanel bp) {
+    public SerializerWindow(BezierPanel bp, Serializer serializer) {
         super("CPLot");
         this.bp = bp;
-        cPlotSerializer = new CPlotSerializer(bp);
+        this.serializer = serializer;
         bp.addChangeListener(this);
         t = new JTextArea();
         JScrollPane scp = new JScrollPane(t);
@@ -46,7 +45,16 @@ public class CPlotWindow extends JFrame implements StateChangeListener, WindowLi
 
         addWindowListener(this);
         t.addKeyListener(this);
-        t.setText(cPlotSerializer.getData());
+        try {
+            t.setText(serializer.getData(false));
+            t.setEditable(true);
+            t.setBackground(defaultBackgroundColor);
+            statusPanel.setText("");
+        } catch (ParseException ex) {
+            statusPanel.setText(ex.getMessage());
+            t.setBackground(Color.PINK);
+            t.setEditable(false);
+        }
         t.setPreferredSize(new Dimension(300, 300));
         pack();
         setVisible(true);
@@ -54,12 +62,31 @@ public class CPlotWindow extends JFrame implements StateChangeListener, WindowLi
 
     public void stateChanged() {
         if (isVisible() && !(t.hasFocus() || hasFocus())) {
-            t.setText(cPlotSerializer.getData());
+            try {
+                t.setText(serializer.getData(false));
+                t.setEditable(true);
+                t.setBackground(defaultBackgroundColor);
+                statusPanel.setText("");
+            } catch (ParseException ex) {
+                statusPanel.setText(ex.getMessage());
+                t.setBackground(Color.PINK);
+                t.setEditable(false);
+            }
         }
     }
 
     public void windowOpened(WindowEvent e) {
-        t.setText(cPlotSerializer.getData());
+        try {
+            t.setText(serializer.getData(false));
+            t.setEditable(true);
+            t.setBackground(defaultBackgroundColor);
+            statusPanel.setText("");
+        } catch (ParseException ex) {
+            statusPanel.setText(ex.getMessage());
+            t.setBackground(Color.PINK);
+            t.setEditable(false);
+        }
+
     }
 
     public void windowClosing(WindowEvent e) {
@@ -87,8 +114,11 @@ public class CPlotWindow extends JFrame implements StateChangeListener, WindowLi
     }
 
     public void keyReleased(KeyEvent e) {
+        if(!t.isEditable()) {
+            return;
+        }
         try {
-            cPlotSerializer.setData(t.getText(), true);
+            serializer.setData(t.getText(), true);
             t.setBackground(defaultBackgroundColor);
             bp.repaint();
             statusPanel.setText("");

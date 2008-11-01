@@ -5,6 +5,7 @@
 package bezier.serializer;
 
 import bezier.BezierPanel;
+import bezier.curves.BSplineCurve;
 import bezier.curves.BezierCurve;
 import bezier.curves.Curve;
 import java.awt.geom.Point2D;
@@ -29,8 +30,25 @@ public class CPlotSerializer implements Serializer {
         this.bp = bp;
     }
 
-    public String getData() {
-        List<Curve> curves = bp.getCurves();
+    public String getData(boolean convert) throws ParseException {
+        List<BezierCurve> curves = new ArrayList<BezierCurve>();
+
+        for (Curve curve : bp.getCurves()) {
+            if (!(curve instanceof BezierCurve)) {
+                if (!convert) {
+                    throw new ParseException("Other curves than Bezier curves is not supported by CPlot", 0);
+                } else if (curve instanceof BSplineCurve) {
+                    BSplineCurve b = (BSplineCurve) curve;
+                    curves.addAll(b.extractAllBezierCurves());
+
+                } else {
+                    throw new ParseException("Could not convert curve to BezierCurve(s)", 0);
+                }
+            } else {
+                curves.add((BezierCurve) curve);
+            }
+        }
+
 
         // find largets positions
         double xMin = Double.MAX_VALUE, xMax = Double.MIN_VALUE, yMin = Double.MAX_VALUE, yMax = Double.MIN_VALUE;
@@ -93,6 +111,7 @@ public class CPlotSerializer implements Serializer {
         boolean weightWarningShowed = false;
         boolean zWarningShowed = false;
         boolean idWarningShowed = false;
+        boolean gotValidCommand = false;
         String zValue = null;
         String weightWarningMessage = "Weight was not 1. Rational bezier curves not supported. ";
         String zWarningMessage = "Different Z values. 3D bezier curves not supported. ";
@@ -100,9 +119,12 @@ public class CPlotSerializer implements Serializer {
 
         String warnings = "";
         try {
+            
             while (st.hasMoreTokens()) {
+                
                 String command = st.nextToken();
                 if (command.equalsIgnoreCase("STOR")) {
+                    gotValidCommand = true;
                     int id = Integer.parseInt(st.nextToken());
                     int degree = Integer.parseInt(st.nextToken());
 
@@ -116,15 +138,16 @@ public class CPlotSerializer implements Serializer {
                         points.put(temp, temp);
                     }
 
-                    if(curves.containsKey(id)) { // id already exists
+                    if (curves.containsKey(id)) { // id already exists
+
                         idWarningShowed = true;
                         if (supressWarnings) {
                             warnings += idWarningMessage;
                         } else {
                             JOptionPane.showMessageDialog(bp, idWarningMessage, "Parse warning", JOptionPane.WARNING_MESSAGE);
                         }
-                        
-                        while(curves.containsKey(id)) {
+
+                        while (curves.containsKey(id)) {
                             id++;
                         }
                     }
@@ -141,7 +164,7 @@ public class CPlotSerializer implements Serializer {
                     }
 
                     for (int i = 0; i < degree; i++) {
-                        
+
                         temp = new Point2D.Double(Double.parseDouble(st.nextToken()), Double.parseDouble(st.nextToken()));
                         if (points.containsKey(temp)) {
                             c.addControlPoint(points.get(temp));
@@ -170,11 +193,30 @@ public class CPlotSerializer implements Serializer {
                             }
                         }
                     }
+                } else if(command.equalsIgnoreCase("CPLO") || 
+                        command.equalsIgnoreCase("CPPL") || 
+                        command.equalsIgnoreCase("VIEW") ||
+                        command.equalsIgnoreCase("WIND") ||
+                        command.equalsIgnoreCase("EXIT") ||
+                        command.equalsIgnoreCase("BORD")) {
+                    // Dont care
+                    gotValidCommand = true;
+                } else {
+                    // invalid CPLOT command. Try parsing it as double. If it fails, it is probably not a cplot file. 
+                    try {
+                        Double.parseDouble(command);
+                    } catch(NumberFormatException ex) {
+                        throw new ParseException("Invalid CPLOT data", 0);
+                    }
+                    
                 }
             }
 
+            if(!gotValidCommand) {
+                throw new ParseException("Invalid CPLOT data", 0);
+            }
             // find largets positions - to flip the coordinate system
-            double xMin = Double.MAX_VALUE, xMax = Double.MIN_VALUE, yMin = Double.MAX_VALUE, yMax = Double.MIN_VALUE;
+            double xMin = Double.MAX_VALUE,  xMax = Double.MIN_VALUE,  yMin = Double.MAX_VALUE,  yMax = Double.MIN_VALUE;
 
             if (curves.isEmpty()) {
                 xMin = 0.0;
@@ -220,5 +262,9 @@ public class CPlotSerializer implements Serializer {
 
     public String getName() {
         return "CPlot";
+    }
+
+    public String getFileExtension() {
+        return "dat";
     }
 }

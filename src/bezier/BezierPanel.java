@@ -3,6 +3,7 @@
  */
 package bezier;
 
+import bezier.curves.BSplineCurve;
 import bezier.curves.BezierCurve;
 import bezier.curves.Curve;
 import java.awt.BasicStroke;
@@ -24,10 +25,14 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.lang.reflect.InvocationTargetException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -38,6 +43,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
 
     private boolean viewControlPolygon = true;
     private boolean viewCoordinateSystem = true;
+    private boolean adaptiveRendering = true;
     private BezierView bezierView;
     private double snap = 3;
     private List<Curve> curves = new ArrayList<Curve>();
@@ -51,6 +57,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     private Point2D mouseLastDragPoint = new Point2D.Double(0, 0);
     private double scale = 1;
     private int quality = Curve.HIGH_QUALITY;
+    private Class<? extends Curve> currentCurveType = BSplineCurve.class;
 
     public BezierPanel(BezierView bw) {
         bezierView = bw;
@@ -79,6 +86,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
      */
     public void setQuality(int quality) {
         this.quality = quality;
+        repaint();
     }
 
     public void scaleAllCurves(double scale) {
@@ -109,7 +117,16 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         stateChanged();
     }
 
-    private void stateChanged() {
+    public void setCurrentCurveType(Class<? extends Curve> curveType) {
+        currentCurveType = curveType;
+    }
+
+    public void setAdaptiveRendering(boolean b) {
+        adaptiveRendering = b;
+        repaint();
+    }
+
+    public void stateChanged() {
         for (StateChangeListener changeListener : changeListeners) {
             changeListener.stateChanged();
         }
@@ -186,7 +203,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                 g.setStroke(curveStroke);
             }
 
-            curve.paintCurve(g, quality);
+            curve.paintCurve(g, quality, adaptiveRendering);
 
             if (viewControlPoints || hovered) {
                 g.setColor(Color.CYAN);
@@ -290,7 +307,7 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                 curves.remove(c);
                 curves.add(new BezierCurve(BezierCurve.splitLeft(c.getControlPoints())));
                 curves.add(new BezierCurve(BezierCurve.splitRight(c.getControlPoints())));
-                
+
                 stateChanged();
             }
 
@@ -312,6 +329,29 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
     public void setViewCoordinateAxis(boolean viewCoordinateSystem) {
         this.viewCoordinateSystem = viewCoordinateSystem;
         repaint();
+    }
+
+    public BSplineCurve getBSplineCurve(Point point) {
+        Point2D closest = getClosestControlPoint(scaleAndTranslatePoint(point), snap);
+
+        if (closest != null) {
+            Curve c = null;
+
+            for (Curve curve : curves) {
+                for (Point2D controlPoint : curve.getControlPoints()) {
+                    if (closest.equals(controlPoint)) {
+                        c = curve;
+                    }
+
+                }
+            }
+
+            if (c != null && c instanceof BSplineCurve) {
+                return (BSplineCurve) c;
+            }
+
+        }
+        return null;
     }
 
     private Point2D getClosestControlPoint(Point2D point, double maxDistance, Point2D butNotThisOne) {
@@ -413,9 +453,37 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
                         // create new curve
 
                         if (hoverPoint != null && e.isControlDown()) {
-                            currentCurve = new BezierCurve(hoverPoint);
+                            try {
+                                currentCurve = currentCurveType.getConstructor(Point2D.class).newInstance(hoverPoint);
+                            } catch (InstantiationException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalAccessException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InvocationTargetException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (NoSuchMethodException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SecurityException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         } else {
-                            currentCurve = new BezierCurve(scaleAndTranslatePoint(e.getPoint()));
+                            try {
+                                currentCurve = currentCurveType.getConstructor(Point2D.class).newInstance(scaleAndTranslatePoint(e.getPoint()));
+                            } catch (InstantiationException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalAccessException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IllegalArgumentException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InvocationTargetException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (NoSuchMethodException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SecurityException ex) {
+                                Logger.getLogger(BezierPanel.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
 
                         curves.add(currentCurve);

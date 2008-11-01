@@ -26,8 +26,9 @@ public abstract class Curve {
      * Paints the curve on the provided graphics object
      * @param g The graphics object to paint on.
      * @param quality The visual-quality of the curve. Must be one of the constants LOW_QUALITY, MEDIUM_QUALITY, HIGH_QUALITY.
+     * @param adaptive adaptive rendering or not
      */
-    public abstract void paintCurve(Graphics2D g, int quality);
+    public abstract void paintCurve(Graphics2D g, int quality, boolean adaptive);
 
     public void paintControlPoints(Graphics2D g) {
         for (Point2D point : controlPoints) {
