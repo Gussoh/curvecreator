@@ -637,6 +637,7 @@ private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
                 }
 
                 bezierPanel.zoomFit();
+                bezierPanel.stateChanged();
 
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(mainPanel, "Could not read file:\n" + ex, "Error reading", JOptionPane.ERROR_MESSAGE);
