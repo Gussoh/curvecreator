@@ -163,8 +163,8 @@ public class BezierPanel extends JPanel implements MouseListener, MouseMotionLis
         }
         Stroke controlPointStroke = new BasicStroke((float) ((snap * 2) * (1 / scale)));
         Stroke controlPolygonStroke = new BasicStroke(1);
-        Stroke curveStroke = new BasicStroke(2);
-        Stroke curveStrokeSelected = new BasicStroke(3);
+        Stroke curveStroke = new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
+        Stroke curveStrokeSelected = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL);
         Stroke coordinateSystemStroke = new BasicStroke(3);
 
         // coordinate system
