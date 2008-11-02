@@ -6,6 +6,7 @@
 package bezier;
 
 import bezier.curves.BezierCurve;
+import bezier.curves.BSplineCurve;
 import bezier.curves.Curve;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -32,27 +33,47 @@ public class InfoBox extends javax.swing.JDialog implements StateChangeListener,
     }
 
     private void updateInfoLabel() {
-        TreeMap<Integer, Integer> degrees = new TreeMap<Integer, Integer>();
+        TreeMap<Integer, Integer> bezierDegrees = new TreeMap<Integer, Integer>();
         for (Curve curve : bezierPanel.getCurves()) {
             if (curve instanceof BezierCurve) {
                 int degree = curve.getControlPoints().size() - 1;
-                if (degrees.containsKey(degree)) {
-                    degrees.put(degree, degrees.get(degree).intValue() + 1);
+                if (bezierDegrees.containsKey(degree)) {
+                    bezierDegrees.put(degree, bezierDegrees.get(degree).intValue() + 1);
                 } else {
-                    degrees.put(degree, 1);
+                    bezierDegrees.put(degree, 1);
                 }
             }
         }
 
+        TreeMap<Integer, Integer> bsplineDegrees = new TreeMap<Integer, Integer>();
+        for (Curve curve : bezierPanel.getCurves()) {
+            if (curve instanceof BSplineCurve) {
+                int degree = ((BSplineCurve) curve).getDegree();
+                if (bsplineDegrees.containsKey(degree)) {
+                    bsplineDegrees.put(degree, bsplineDegrees.get(degree).intValue() + 1);
+                } else {
+                    bsplineDegrees.put(degree, 1);
+                }
+            }
+        }
+        
 
         StringBuilder sb = new StringBuilder();
+        sb.append("<b>Bezier:</b>");
         sb.append("<table><tr><th>Degree</th><th>Number of</th></tr>");
-        for (Entry<Integer, Integer> entry : degrees.entrySet()) {
+        for (Entry<Integer, Integer> entry : bezierDegrees.entrySet()) {
             sb.append("<tr><td>").append(entry.getKey()).append("</td><td>").append(entry.getValue()).append("</td></tr>");
         }
         sb.append("</table>");
 
-        infoLabel.setText("<html>Number of curves: " + bezierPanel.getCurves().size() + "<br> <br>Number of bezier curves of diffrent degrees:<br>" + sb.toString() + "</html>");
+        sb.append("<b>B-Spline:</b>");
+        sb.append("<table><tr><th>Degree</th><th>Number of</th></tr>");
+        for (Entry<Integer, Integer> entry : bsplineDegrees.entrySet()) {
+            sb.append("<tr><td>").append(entry.getKey()).append("</td><td>").append(entry.getValue()).append("</td></tr>");
+        }
+        sb.append("</table>");
+        
+        infoLabel.setText("<html>Number of curves: " + bezierPanel.getCurves().size() + "<br> <br>Number of curves of diffrent degrees:<br>" + sb.toString() + "</html>");
     }
 
     /** This method is called from within the constructor to
@@ -107,7 +128,7 @@ public class InfoBox extends javax.swing.JDialog implements StateChangeListener,
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addComponent(infoLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(closeButton)
                 .addContainerGap())
